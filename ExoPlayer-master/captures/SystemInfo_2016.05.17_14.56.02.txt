@@ -1,0 +1,61 @@
+Applications Graphics Acceleration Info:
+Uptime: 18339265 Realtime: 18339265
+
+** Graphics info for pid 2683 [com.google.android.exoplayer.demo] **
+
+Stats since: 14454275964599ns
+Total frames rendered: 5961
+Janky frames: 2945 (49.40%)
+90th percentile: 29ms
+95th percentile: 30ms
+99th percentile: 36ms
+Number Missed Vsync: 20
+Number High input latency: 0
+Number Slow UI thread: 1014
+Number Slow bitmap uploads: 9
+Number Slow issue draw commands: 2031
+
+Caches:
+Current memory usage / total memory usage (bytes):
+  TextureCache            48400 / 92274688
+  LayerCache                  0 / 60817408 (numLayers = 0)
+  Layers total          0 (numLayers = 0)
+  RenderBufferCache           0 /  8388608
+  GradientCache               0 /  2097152
+  PathCache                   0 / 16777216
+  TessellationCache           0 /  1048576
+  TextDropShadowCache         0 /  6291456
+  PatchCache                 64 /   131072
+  FontRenderer 0 A8     1048576 /  1048576
+  FontRenderer 0 RGBA         0 /        0
+  FontRenderer 0 total  1048576 /  1048576
+Other:
+  FboCache                    0 /       16
+Total memory usage:
+  1097040 bytes, 1.05 MB
+
+Profile data in ms:
+
+	com.google.android.exoplayer.demo/com.google.android.exoplayer.demo.SampleChooserActivity/android.view.ViewRootImpl@512a818 (visibility=0)
+Stats since: 14454275964599ns
+Total frames rendered: 5961
+Janky frames: 2945 (49.40%)
+90th percentile: 29ms
+95th percentile: 30ms
+99th percentile: 36ms
+Number Missed Vsync: 20
+Number High input latency: 0
+Number Slow UI thread: 1014
+Number Slow bitmap uploads: 9
+Number Slow issue draw commands: 2031
+
+View hierarchy:
+
+  com.google.android.exoplayer.demo/com.google.android.exoplayer.demo.SampleChooserActivity/android.view.ViewRootImpl@512a818
+  20 views, 30.95 kB of display lists
+
+
+Total ViewRootImpl: 1
+Total Views:        20
+Total DisplayList:  30.95 kB
+
