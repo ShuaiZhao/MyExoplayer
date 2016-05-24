@@ -22,7 +22,8 @@ import java.util.Locale;
 /**
  * Holds statically defined sample definitions.
  */
-/* package */ class Samples {
+/* package */
+class Samples {
 
   public static class Sample {
 

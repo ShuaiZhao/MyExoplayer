@@ -63,6 +63,11 @@ public final class DebugTextViewHelper implements Runnable {
    * @param textView The {@link TextView} that should be updated to display the information.
    */
   public DebugTextViewHelper(Provider debuggable, TextView textView) {
+
+    /**
+     * DemoPlayer.class implementes Provider interface
+     * Here debuggable can be considered as a player instance.
+     */
     this.debuggable = debuggable;
     this.textView = textView;
   }
@@ -88,38 +93,46 @@ public final class DebugTextViewHelper implements Runnable {
 
   @Override
   public void run() {
-    textView.setText(getRenderString());
+    /**
+     * added debug info by shuai
+     * Video debug information is obtained by getRenderString() function
+     */
+    String txt = "Shuai:\n";
+    txt += getRenderString();
+    textView.setText(txt);
+//    textView.setText(getRenderString());
     textView.postDelayed(this, REFRESH_INTERVAL_MS);
   }
 
   private String getRenderString() {
     return getTimeString() + " " + getQualityString() + " " + getBandwidthString() + " "
         + getVideoCodecCountersString();
+
   }
 
   private String getTimeString() {
-    return "ms(" + debuggable.getCurrentPosition() + ")";
+    return "Position: " + debuggable.getCurrentPosition() + " ms\n";
   }
 
   private String getQualityString() {
     Format format = debuggable.getFormat();
-    return format == null ? "id:? br:? h:?"
-        : "id:" + format.id + " br:" + format.bitrate + " h:" + format.height;
+    return format == null ? "Format: id:? br:? h:?\n"
+        : "Format: id:" + format.id + " br:" + format.bitrate + " h:" + format.height + "\n";
   }
 
   private String getBandwidthString() {
     BandwidthMeter bandwidthMeter = debuggable.getBandwidthMeter();
     if (bandwidthMeter == null
         || bandwidthMeter.getBitrateEstimate() == BandwidthMeter.NO_ESTIMATE) {
-      return "bw:?";
+      return "BandWidth (bps):?\n";
     } else {
-      return "bw:" + (bandwidthMeter.getBitrateEstimate() / 1000);
+      return "Bandwidth (bps):" + (bandwidthMeter.getBitrateEstimate() / 1000) + "\n";
     }
   }
 
   private String getVideoCodecCountersString() {
     CodecCounters codecCounters = debuggable.getCodecCounters();
-    return codecCounters == null ? "" : codecCounters.getDebugString();
+    return codecCounters == null ? "CodecCounter\n" : "CodecCounter: "+ codecCounters.getDebugString();
   }
 
 }

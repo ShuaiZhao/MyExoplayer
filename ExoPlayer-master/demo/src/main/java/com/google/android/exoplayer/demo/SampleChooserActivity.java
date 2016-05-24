@@ -43,7 +43,13 @@ public class SampleChooserActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_chooser_activity);
+
+    /**
+     * createa a customized SampleGroup instance
+     * SampleGroup is a
+     */
     final List<SampleGroup> sampleGroups = new ArrayList<>();
+
     /*-- added by Shuai
     * Add My DASH
     * **/
@@ -84,12 +90,20 @@ public class SampleChooserActivity extends Activity {
     group = new SampleGroup("Misc");
     group.addAll(Samples.MISC);
     sampleGroups.add(group);
+
     ExpandableListView sampleList = (ExpandableListView) findViewById(R.id.sample_list);
+
     sampleList.setAdapter(new SampleAdapter(this, sampleGroups));
     sampleList.setOnChildClickListener(new OnChildClickListener() {
       @Override
       public boolean onChildClick(ExpandableListView parent, View view, int groupPosition,
           int childPosition, long id) {
+
+        /***
+         * Added by shuai
+         * For each click for attached Sample,
+         * it will register a custermized EvenListener: onSampleSelected()
+         */
         onSampleSelected(sampleGroups.get(groupPosition).samples.get(childPosition));
         return true;
       }
@@ -97,6 +111,14 @@ public class SampleChooserActivity extends Activity {
   }
 
   private void onSampleSelected(Sample sample) {
+    /**
+     * added by shuai
+     * For each click event, it will move forward to PlayerActivity Class
+     * to handle playback
+     * It will also forward the media info such as contentID, type and provider to
+     * playerAcivitiy Class
+     */
+
     Intent mpdIntent = new Intent(this, PlayerActivity.class)
         .setData(Uri.parse(sample.uri))
         .putExtra(PlayerActivity.CONTENT_ID_EXTRA, sample.contentId)
@@ -105,6 +127,10 @@ public class SampleChooserActivity extends Activity {
     startActivity(mpdIntent);
   }
 
+
+  /***
+   * SampleAdapter is a customized ExpanableListAdapter
+   */
   private static final class SampleAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
@@ -181,6 +207,10 @@ public class SampleChooserActivity extends Activity {
 
   }
 
+
+  /***
+   * a SampleGroup is a List container
+   */
   private static final class SampleGroup {
 
     public final String title;

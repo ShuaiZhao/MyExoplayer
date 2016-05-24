@@ -64,6 +64,7 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.accessibility.CaptioningManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -115,7 +116,8 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
   private Button textButton;
   private Button retryButton;
 
-  private DemoPlayer player;
+
+  private DemoPlayer player;    // A DemoPlayer Instance
   private DebugTextViewHelper debugViewHelper;
   private boolean playerNeedsPrepare;
 
@@ -129,13 +131,28 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
 
   private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
 
+  /**
+   * Added by shuai
+   * add a graph_plot_view for plotting any data for future
+   *
+   */
+//  private TextView graphPlotView;
+  private ImageView graphPlotView;
+
+
+
   // Activity lifecycle
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    //all important initialization needs to happen in onCreate()!
+    // initialize base Aciticity class to setup for this Activity Clss
+    // BUndle allows you to pass info to different activities
     super.onCreate(savedInstanceState);
 
+    Log.i("PlayerActivity>: ", "PlayerActivity Starts");
     setContentView(R.layout.player_activity);
+    //set OnTouchListenser for root Layout: FrameLayout
     View root = findViewById(R.id.root);
     root.setOnTouchListener(new OnTouchListener() {
       @Override
@@ -152,12 +169,18 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
       @Override
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE
-            || keyCode == KeyEvent.KEYCODE_MENU) {
+                || keyCode == KeyEvent.KEYCODE_MENU) {
           return false;
         }
         return mediaController.dispatchKeyEvent(event);
       }
     });
+
+    /**
+     * added by shuai
+     */
+    //graphPlotView = (TextView)findViewById(R.id.graph_plot_view);
+    graphPlotView = (ImageView) findViewById(R.id.graph_plot_view);
 
     shutterView = findViewById(R.id.shutter);
     debugRootView = findViewById(R.id.controls_root);
@@ -186,6 +209,8 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
     audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(this, this);
     audioCapabilitiesReceiver.register();
   }
+  //endof onCreate()
+
 
   @Override
   public void onNewIntent(Intent intent) {
@@ -210,6 +235,12 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
     }
   }
 
+  /**
+   * commented added by shuai:
+   * parse the Intent from SampleChooseActivity.java
+   * get contentUri, contentTpe, contentId, provider
+   * get called by onResume() -> Then prepare the player
+   */
   private void onShown() {
     Intent intent = getIntent();
     contentUri = intent.getData();
@@ -324,17 +355,25 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
 
   // Internal methods
 
+  /**
+   * comments added by shuai
+   * return a RenderBuilder based on contentType
+   */
   private RendererBuilder getRendererBuilder() {
     String userAgent = Util.getUserAgent(this, "ExoPlayerDemo");
     switch (contentType) {
+      //for SmoothStreaming
       case Util.TYPE_SS:
         return new SmoothStreamingRendererBuilder(this, userAgent, contentUri.toString(),
             new SmoothStreamingTestMediaDrmCallback());
+      //For DASH
       case Util.TYPE_DASH:
         return new DashRendererBuilder(this, userAgent, contentUri.toString(),
             new WidevineTestMediaDrmCallback(contentId, provider));
+      //For HLS
       case Util.TYPE_HLS:
         return new HlsRendererBuilder(this, userAgent, contentUri.toString());
+      //others
       case Util.TYPE_OTHER:
         return new ExtractorRendererBuilder(this, userAgent, contentUri);
       default:
@@ -342,9 +381,14 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
     }
   }
 
+  /**
+   * Comments added by shuai
+   * prepare player
+   * create DemoPlayer instance based on contentType: DASH, SS, HTS, Or others
+   */
   private void preparePlayer(boolean playWhenReady) {
     if (player == null) {
-      player = new DemoPlayer(getRendererBuilder());
+      player = new DemoPlayer(getRendererBuilder()); //return a Demoplayer instance based on contentType
       player.addListener(this);
       player.setCaptionListener(this);
       player.setMetadataListener(this);
@@ -357,8 +401,15 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
       player.addListener(eventLogger);
       player.setInfoListener(eventLogger);
       player.setInternalErrorListener(eventLogger);
+
+      /**
+       * comment added by shuai
+       * This is a new thread to output player debug info
+       * it accepts a ExoPlayer instance and TextView
+       */
       debugViewHelper = new DebugTextViewHelper(player, debugTextView);
       debugViewHelper.start();
+
     }
     if (playerNeedsPrepare) {
       player.prepare();
@@ -369,10 +420,16 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
     player.setPlayWhenReady(playWhenReady);
   }
 
+  /**
+   * commentes added by shuai
+   * Release player resources
+   */
   private void releasePlayer() {
     if (player != null) {
+      //stop the debugView thread
       debugViewHelper.stop();
       debugViewHelper = null;
+
       playerPosition = player.getCurrentPosition();
       player.release();
       player = null;
@@ -383,6 +440,11 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
 
   // DemoPlayer.Listener implementation
 
+  /**
+   * comments added by shuai
+   * set playWhenReady value when state chagne`
+   * This will update @+id/player_state_view to show video stream debug info
+   */
   @Override
   public void onStateChanged(boolean playWhenReady, int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
@@ -410,6 +472,17 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
         break;
     }
     playerStateTextView.setText(text);
+
+    /**
+     * Added by Shuai
+     */
+    //graphPlotView.setText("This part left for plotting data in future");
+    //graphPlotView.setImageIcon();
+
+    /**
+     * comments added by shuai
+     * change buttons' visibility
+     */
     updateButtonVisibilities();
   }
 
@@ -458,8 +531,13 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
         height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
   }
 
-  // User controls
+  /**** User controls *******/
 
+
+  /**
+   * comments added by shuai
+   * update button visibility
+   */
   private void updateButtonVisibilities() {
     retryButton.setVisibility(playerNeedsPrepare ? View.VISIBLE : View.GONE);
     videoButton.setVisibility(haveTracks(DemoPlayer.TYPE_VIDEO) ? View.VISIBLE : View.GONE);
@@ -618,6 +696,10 @@ public class PlayerActivity extends Activity implements SurfaceHolder.Callback, 
     }
   }
 
+  /**
+   * Comments added by shuai
+   * Show player control
+   */
   private void showControls() {
     mediaController.show(0);
     debugRootView.setVisibility(View.VISIBLE);

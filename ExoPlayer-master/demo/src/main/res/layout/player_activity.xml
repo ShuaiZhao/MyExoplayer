@@ -48,23 +48,37 @@
       android:background="#88000000"
       android:orientation="vertical">
 
+      <!--this is the player status text view on top of player screen -->
     <TextView android:id="@+id/player_state_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:textSize="10sp"
+        android:textSize="14sp"
         tools:ignore="SmallSp"/>
 
+      <!--this is the player debug statistic view on top of player screen -->
     <TextView android:id="@+id/debug_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:textSize="10sp"
+        android:textSize="14sp"
         tools:ignore="SmallSp"/>
 
-    <LinearLayout android:id="@+id/controls_root"
+      <!-- Added by shuai: this view for plotting any figure-->
+      <ImageView android:id="@+id/graph_plot_view"
+          android:layout_width="match_parent"
+          android:layout_height="100dip"
+          android:paddingLeft="4dp"
+          android:paddingRight="4dp"
+          android:textSize="14sp"
+          android:src="@drawable/andoridicon"
+          tools:ignore="SmallSp"/>
+      <!--android:layout_height="wrap_content"-->
+
+
+      <LinearLayout android:id="@+id/controls_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
