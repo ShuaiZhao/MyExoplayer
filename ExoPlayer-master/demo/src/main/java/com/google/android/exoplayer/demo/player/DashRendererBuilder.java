@@ -30,7 +30,10 @@ import com.google.android.exoplayer.TrackRenderer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.chunk.ChunkSampleSource;
 import com.google.android.exoplayer.chunk.ChunkSource;
+
 import com.google.android.exoplayer.chunk.FormatEvaluator.AdaptiveEvaluator;
+import com.google.android.exoplayer.chunk.FormatEvaluator.MyAdaptiveEvaluator; //import MyAdaptiveEvaluator
+
 import com.google.android.exoplayer.dash.DashChunkSource;
 import com.google.android.exoplayer.dash.DefaultDashTrackSelector;
 import com.google.android.exoplayer.dash.mpd.AdaptationSet;
@@ -238,9 +241,16 @@ public class DashRendererBuilder implements RendererBuilder {
 
             // Build the video renderer.
             DataSource videoDataSource = new DefaultUriDataSource(context, bandwidthMeter, userAgent);
+
+//            ChunkSource videoChunkSource = new DashChunkSource(manifestFetcher,
+//                    DefaultDashTrackSelector.newVideoInstance(context, true, filterHdContent),
+//                    videoDataSource, new AdaptiveEvaluator(bandwidthMeter), LIVE_EDGE_LATENCY_MS,
+//                    elapsedRealtimeOffset, mainHandler, player, DemoPlayer.TYPE_VIDEO);
+
+            //calling MyFormaEvaluator
             ChunkSource videoChunkSource = new DashChunkSource(manifestFetcher,
                     DefaultDashTrackSelector.newVideoInstance(context, true, filterHdContent),
-                    videoDataSource, new AdaptiveEvaluator(bandwidthMeter), LIVE_EDGE_LATENCY_MS,
+                    videoDataSource, new MyAdaptiveEvaluator(bandwidthMeter), LIVE_EDGE_LATENCY_MS,
                     elapsedRealtimeOffset, mainHandler, player, DemoPlayer.TYPE_VIDEO);
             ChunkSampleSource videoSampleSource = new ChunkSampleSource(videoChunkSource, loadControl,
                     VIDEO_BUFFER_SEGMENTS * BUFFER_SEGMENT_SIZE, mainHandler, player,

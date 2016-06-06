@@ -169,5 +169,4 @@ public class Format {
     Format other = (Format) obj;
     return other.id.equals(id);
   }
-
 }

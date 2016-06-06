@@ -20,7 +20,11 @@ import com.google.android.exoplayer.util.Clock;
 import com.google.android.exoplayer.util.SlidingPercentile;
 import com.google.android.exoplayer.util.SystemClock;
 
+import android.nfc.Tag;
 import android.os.Handler;
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Counts transferred bytes while transfers are open and creates a bandwidth sample and updated
@@ -29,6 +33,12 @@ import android.os.Handler;
 public final class DefaultBandwidthMeter implements BandwidthMeter {
 
   public static final int DEFAULT_MAX_WEIGHT = 2000;
+
+  /**
+   * TAG added by shuai
+   */
+
+  private static final String TAG = "DefaultBandwidthMeter";
 
   private final Handler eventHandler;
   private final EventListener eventListener;
@@ -67,7 +77,14 @@ public final class DefaultBandwidthMeter implements BandwidthMeter {
 
   @Override
   public synchronized long getBitrateEstimate() {
+
+    /**
+     * Log.d added by shuai
+     */
+    Log.d(TAG, "Estimated Bitrate: " + bitrateEstimate);
+
     return bitrateEstimate;
+
   }
 
   @Override
